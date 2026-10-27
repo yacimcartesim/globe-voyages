@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Ellipsis, Pencil, Trash2, X } from 'lucide-react'
+import { BookOpen, Ellipsis, Pencil, Trash2, X } from 'lucide-react'
 import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react'
 import { createPortal } from 'react-dom'
 import { SegmentedControl } from '../../ui/controls'
@@ -10,6 +10,7 @@ import { ItineraryTab } from './ItineraryTab'
 import { PracticalTab } from './PracticalTab'
 import { PhotosTab } from './PhotosTab'
 import { BudgetTab } from './BudgetTab'
+import { TripGuide } from '../../print/TripGuide'
 import { TripFormSheet } from '../TripFormSheet'
 import { deleteTrip, formatRange, tripLength, useTrip } from '../../db/trips'
 import { useUI } from '../../state/ui'
@@ -27,11 +28,13 @@ export function TripSheet() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [guideOpen, setGuideOpen] = useState(false)
 
   useEffect(() => {
     setTab('itinerary')
     setMenuOpen(false)
     setConfirmDelete(false)
+    setGuideOpen(false)
   }, [tripId])
 
   useEffect(() => {
@@ -113,6 +116,14 @@ export function TripSheet() {
                       }}
                     />
                     <MenuItem
+                      icon={BookOpen}
+                      label="Exporter en guide (PDF)"
+                      onClick={() => {
+                        setMenuOpen(false)
+                        setGuideOpen(true)
+                      }}
+                    />
+                    <MenuItem
                       icon={Trash2}
                       destructive
                       label={confirmDelete ? 'Confirmer la suppression' : 'Supprimer le voyage'}
@@ -150,6 +161,7 @@ export function TripSheet() {
           </div>
 
           <TripFormSheet open={editOpen} onClose={() => setEditOpen(false)} trip={trip} />
+          {guideOpen && <TripGuide trip={trip} onClose={() => setGuideOpen(false)} />}
         </motion.div>
       )}
     </AnimatePresence>,

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Download, FlaskConical, MapPinned, HardDrive, Info, RotateCw, ShieldCheck, Upload } from 'lucide-react'
+import { FlaskConical, MapPinned, HardDrive, Info, RotateCw, ShieldCheck } from 'lucide-react'
 import { BottomSheet } from '../ui/BottomSheet'
 import { Row, Section } from '../ui/GroupedList'
 import { Button, Switch } from '../ui/controls'
 import { usePreference } from '../hooks/usePreference'
+import { BackupSection } from './BackupSection'
 import { clearDemo, loadDemo, useDemoLoaded } from '../db/demo'
 import { formatBytes, getStorageInfo, isStandalone, isStoragePersisted, type StorageInfo } from '../services/storage'
 
@@ -36,6 +37,8 @@ export function SettingsSheet({ open, onClose }: Props) {
       }
     >
       <div className="pt-4">
+        <BackupSection />
+
         <Section header="Globe">
           <Row
             icon={RotateCw}
@@ -67,13 +70,6 @@ export function SettingsSheet({ open, onClose }: Props) {
           />
         </Section>
 
-        <Section
-          header="Sauvegarde"
-          footer="Tes données restent uniquement sur cet appareil. Exporte régulièrement une sauvegarde vers iCloud Drive. Disponible en phase 7."
-        >
-          <Row icon={Upload} iconColor="var(--blue)" label="Exporter une sauvegarde" chevron onClick={() => {}} disabled />
-          <Row icon={Download} iconColor="var(--green)" label="Importer une sauvegarde" chevron onClick={() => {}} disabled />
-        </Section>
 
         <Section
           header="Stockage"

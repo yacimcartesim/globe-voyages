@@ -11,6 +11,7 @@ import { usePreference } from '../hooks/usePreference'
 import { useUI } from '../state/ui'
 import { useAllStops } from '../db/trips'
 import { useWishPlaces } from '../db/wishlist'
+import { BackupReminder } from '../ui/BackupReminder'
 
 // Le globe (three.js) est chargé à part : l'interface s'affiche tout de suite, le globe juste après
 const GlobeView = lazy(() => import('../globe/GlobeView').then((m) => ({ default: m.GlobeView })))
@@ -90,6 +91,7 @@ export function GlobeScreen({ entries, active, onOpenSettings }: Props) {
             <IconButton icon={Plus} label="Ajouter un pays" filled onClick={() => setAddOpen(true)} />
           </div>
         </div>
+        <BackupReminder onBackup={onOpenSettings} />
       </header>
 
       <AddCountrySheet open={addOpen} onClose={() => setAddOpen(false)} visited={visitedSet} onPick={pick} />

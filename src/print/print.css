@@ -1,0 +1,254 @@
+/* ------------------------------------------------------------------
+   Guide de voyage imprimable (A4), même direction artistique que l'app.
+   Toujours en clair, quel que soit le thème de l'appareil.
+   ------------------------------------------------------------------ */
+
+.guide {
+  /* Palette claire forcée (les classes Tailwind du Markdown lisent ces variables) */
+  --label: #1c1c1e;
+  --label-2: rgb(60 60 67 / 0.65);
+  --label-3: rgb(60 60 67 / 0.35);
+  --blue: #007aff;
+  color-scheme: light;
+  color: #1c1c1e;
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  max-width: 210mm;
+  margin: 12px auto 48px;
+  padding: 14mm;
+  box-shadow: 0 8px 30px rgb(0 0 0 / 0.12);
+  border-radius: 8px;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.guide h1 {
+  font-size: 30pt;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 8mm 0 2mm;
+}
+.guide h2 {
+  font-size: 20pt;
+  font-weight: 700;
+  margin: 0 0 6mm;
+}
+.guide h3 {
+  font-size: 12.5pt;
+  font-weight: 600;
+  margin: 0 0 1.5mm;
+}
+.guide-sub {
+  font-size: 13pt;
+  color: rgb(60 60 67 / 0.7);
+}
+.guide-meta {
+  font-size: 11pt;
+  color: rgb(60 60 67 / 0.7);
+  margin-top: 1mm;
+}
+
+/* Couverture */
+.guide-cover-img {
+  width: 100%;
+  height: 120mm;
+  object-fit: cover;
+  border-radius: 6mm;
+  display: block;
+}
+.guide-cover-fallback {
+  background: linear-gradient(135deg, #48a6ff, #5856d6);
+}
+.guide-flags {
+  display: flex;
+  gap: 2mm;
+  margin-top: 8mm;
+}
+.guide-flags img {
+  width: 12mm;
+  height: 9mm;
+  object-fit: cover;
+  border-radius: 1.2mm;
+  box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 0.15);
+}
+
+.guide-section {
+  margin-top: 12mm;
+}
+
+/* Itinéraire */
+.guide-map {
+  width: 100%;
+  border-radius: 4mm;
+  margin-bottom: 7mm;
+  display: block;
+}
+.guide-stops {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.guide-day {
+  font-size: 9.5pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgb(60 60 67 / 0.6);
+  margin: 5mm 0 2mm;
+  break-after: avoid;
+}
+.guide-stop {
+  display: flex;
+  gap: 3.5mm;
+  padding: 2mm 0;
+  border-bottom: 0.3mm solid rgb(60 60 67 / 0.12);
+  break-inside: avoid;
+}
+.guide-num {
+  flex: none;
+  width: 7mm;
+  height: 7mm;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 9pt;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #007aff;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.guide-num[data-type='park'] { background: #34c759; }
+.guide-num[data-type='lodging'] { background: #5856d6; }
+.guide-num[data-type='poi'] { background: #ff9500; }
+.guide-num[data-type='event'] { background: #ff2d55; }
+.guide-stop-name {
+  font-size: 12pt;
+  font-weight: 600;
+}
+.guide-stop-meta {
+  font-size: 9.5pt;
+  color: rgb(60 60 67 / 0.65);
+}
+.guide-stop-notes {
+  font-size: 10.5pt;
+  margin-top: 1mm;
+  white-space: pre-line;
+}
+
+/* Infos pratiques */
+.guide-practical {
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+.guide-practical .text-body {
+  font-size: 10.5pt;
+  line-height: 1.45;
+}
+
+/* Budget */
+.guide-total {
+  font-size: 30pt;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.guide-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6mm;
+  font-size: 11pt;
+}
+.guide-table td {
+  padding: 2mm 0;
+  border-bottom: 0.3mm solid rgb(60 60 67 / 0.12);
+}
+.guide-table td:nth-child(n + 2) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.guide-table td:last-child {
+  width: 18mm;
+  color: rgb(60 60 67 / 0.65);
+}
+.guide-dot {
+  display: inline-block;
+  width: 3mm;
+  height: 3mm;
+  border-radius: 50%;
+  margin-right: 2.5mm;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.guide-dot[data-cat='lodging'] { background: #5856d6; }
+.guide-dot[data-cat='transport'] { background: #007aff; }
+.guide-dot[data-cat='food'] { background: #ff9500; }
+.guide-dot[data-cat='activities'] { background: #34c759; }
+.guide-dot[data-cat='events'] { background: #ff2d55; }
+.guide-dot[data-cat='misc'] { background: #8e8e93; }
+
+/* Photos */
+.guide-photos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3mm;
+}
+.guide-photos figure {
+  margin: 0;
+  break-inside: avoid;
+}
+.guide-photos img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 2.5mm;
+  display: block;
+}
+.guide-photos figcaption {
+  font-size: 8.5pt;
+  color: rgb(60 60 67 / 0.7);
+  margin-top: 1mm;
+}
+
+/* ------------------------------------------------------------------ Impression */
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+  /* Seul le guide est imprimé : l'app et les fiches ouvertes sont masquées */
+  html.printing-guide body > *:not(.guide-overlay) {
+    display: none !important;
+  }
+  html.printing-guide,
+  html.printing-guide body {
+    background: #fff !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .guide-overlay {
+    position: static !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .guide {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  .guide-page {
+    break-before: page;
+    margin-top: 0;
+  }
+  img {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
