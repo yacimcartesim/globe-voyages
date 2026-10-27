@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CalendarDays, Check, Luggage, Star, Trash2 } from 'lucide-react'
+import { CalendarDays, Check, Luggage, Plus, Star, Trash2 } from 'lucide-react'
 import { BottomSheet } from '../ui/BottomSheet'
 import { Row, Section } from '../ui/GroupedList'
 import { Button } from '../ui/controls'
@@ -8,10 +8,12 @@ import { getPlace, placeName, placeSubtitle } from '../data/places'
 import { markVisited, markWishlist, removeCountry, updateCountry } from '../db/countries'
 import type { CountryEntry } from '../db/schema'
 import { useUI } from '../state/ui'
+import { formatRange, useTrips } from '../db/trips'
 
 /** Fiche d'un pays : statut (visité / wishlist), date de première visite, voyages liés */
 export function CountrySheet({ entries }: { entries: CountryEntry[] }) {
-  const { countryCode: code, closeCountry } = useUI()
+  const { countryCode: code, closeCountry, openTrip, startNewTrip } = useUI()
+  const trips = (useTrips() ?? []).filter((t) => code && t.countries.includes(code))
   const entry = entries.find((e) => e.code === code)
   const place = code ? getPlace(code) : undefined
   const [confirmRemove, setConfirmRemove] = useState(false)
@@ -67,8 +69,31 @@ export function CountrySheet({ entries }: { entries: CountryEntry[] }) {
                 />
               </Section>
 
-              <Section header="Voyages" footer="Les voyages arrivent en phase 3.">
-                <Row icon={Luggage} iconColor="var(--orange)" label="Aucun voyage pour l’instant" />
+              <Section header="Voyages">
+                {trips.map((t) => (
+                  <Row
+                    key={t.id}
+                    icon={Luggage}
+                    iconColor="var(--orange)"
+                    label={
+                      <span className="block">
+                        <span className="block">{t.title}</span>
+                        <span className="text-footnote block text-label-2">{formatRange(t.start, t.end)}</span>
+                      </span>
+                    }
+                    chevron
+                    onClick={() => openTrip(t.id)}
+                  />
+                ))}
+                <Row
+                  icon={Plus}
+                  iconColor="var(--green)"
+                  label="Nouveau voyage"
+                  onClick={() => {
+                    closeCountry()
+                    startNewTrip([code])
+                  }}
+                />
               </Section>
 
               <Section>

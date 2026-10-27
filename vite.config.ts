@@ -45,11 +45,34 @@ export default defineConfig({
       },
       workbox: {
         // Tout ce qui est construit (JS, CSS, drapeaux, frontières, icônes) est mis en cache pour le hors-ligne
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,json,woff2}'],
+        globPatterns: ['**/*.{js,mjs,css,html,svg,png,ico,json,woff2}'],
         // Les écrans de démarrage ne servent qu'à l'installation : inutile de les garder en cache
         globIgnores: ['**/apple-splash-*.png', '**/splash.svg'],
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
         navigateFallback: `${BASE}index.html`,
+        // Cartes d'itinéraire (OpenFreeMap) : les zones déjà consultées restent visibles hors connexion
+        runtimeCaching: [
+          {
+            // Style et index des tuiles : version à jour si le réseau répond vite, sinon la copie en cache
+            urlPattern: /^https:\/\/tiles\.openfreemap\.org\/(styles\/.*|planet)$/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'carte-styles',
+              networkTimeoutSeconds: 3,
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // Tuiles, polices et icônes de la carte : jamais modifiées, donc servies depuis le cache
+            urlPattern: /^https:\/\/tiles\.openfreemap\.org\//,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'carte-tuiles',
+              expiration: { maxEntries: 3000, maxAgeSeconds: 60 * 60 * 24 * 180 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
       },
     }),
   ],

@@ -8,7 +8,9 @@ import { WishlistScreen } from './screens/WishlistScreen'
 import { SettingsSheet } from './screens/SettingsSheet'
 import { CountrySheet } from './screens/CountrySheet'
 import { useCountryEntries } from './db/countries'
-import { UIProvider } from './state/ui'
+import { UIProvider, useUI } from './state/ui'
+import { TripSheet } from './screens/trip/TripSheet'
+import { TripFormSheet } from './screens/TripFormSheet'
 
 type TabId = 'globe' | 'trips' | 'stats' | 'wishlist'
 
@@ -47,7 +49,22 @@ export default function App() {
         <TabBar tabs={TABS} active={tab} onChange={setTab} />
         <SettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} />
         <CountrySheet entries={entries} />
+        <TripSheet />
+        <NewTrip />
       </div>
     </UIProvider>
+  )
+}
+
+/** Formulaire « Nouveau voyage », ouvrable depuis n'importe quel écran ; ouvre le voyage une fois créé */
+function NewTrip() {
+  const { newTrip, closeNewTrip, openTrip } = useUI()
+  return (
+    <TripFormSheet
+      open={!!newTrip}
+      onClose={closeNewTrip}
+      initialCountries={newTrip?.countries}
+      onCreated={openTrip}
+    />
   )
 }

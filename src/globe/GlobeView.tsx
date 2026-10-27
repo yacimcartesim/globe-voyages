@@ -15,6 +15,8 @@ type Props = {
   active: boolean
   autoRotate: boolean
   onSelect: (code: string) => void
+  /** Étapes des voyages : petits points affichés quand on zoome */
+  points: { lat: number; lng: number }[]
 }
 
 export type GlobeHandle = { flyTo: (code: string) => void }
@@ -25,13 +27,15 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
  * Globe 3D (three.js via react-globe.gl) recouvert de l'image générée dans texture.ts.
  */
 export const GlobeView = forwardRef<GlobeHandle, Props>(function GlobeView(
-  { visited, wishlist, reveal, onRevealDone, active, autoRotate, onSelect },
+  { visited, wishlist, reveal, onRevealDone, active, autoRotate, onSelect, points },
   ref,
 ) {
   const globeRef = useRef<GlobeMethods>(undefined)
   const containerRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ width: 0, height: 0 })
   const scheme = useColorScheme()
+  // Les points des étapes n'apparaissent qu'en vue rapprochée (sinon ils encombrent le globe)
+  const [zoomedIn, setZoomedIn] = useState(false)
   const palette = scheme === 'dark' ? PALETTE_DARK : PALETTE_LIGHT
 
   // Image du globe : un canvas 4096 × 2048 transformé en texture three.js
@@ -175,6 +179,16 @@ export const GlobeView = forwardRef<GlobeHandle, Props>(function GlobeView(
           showGraticules={false}
           animateIn={false}
           onGlobeReady={onGlobeReady}
+          pointsData={zoomedIn ? points : []}
+          pointLat="lat"
+          pointLng="lng"
+          pointColor={() => (scheme === 'dark' ? '#ffffff' : '#0a84ff')}
+          pointRadius={0.09}
+          pointAltitude={0.002}
+          pointResolution={8}
+          pointsMerge
+          pointsTransitionDuration={0}
+          onZoom={({ altitude }) => setZoomedIn(altitude < 1.3)}
           // Pas de survol/raycasting à chaque image : les taps sont gérés ci-dessus
           enablePointerInteraction={false}
         />

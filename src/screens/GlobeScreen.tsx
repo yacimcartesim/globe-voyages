@@ -9,6 +9,7 @@ import { markVisited } from '../db/countries'
 import type { CountryEntry } from '../db/schema'
 import { usePreference } from '../hooks/usePreference'
 import { useUI } from '../state/ui'
+import { useAllStops } from '../db/trips'
 
 // Le globe (three.js) est chargé à part : l'interface s'affiche tout de suite, le globe juste après
 const GlobeView = lazy(() => import('../globe/GlobeView').then((m) => ({ default: m.GlobeView })))
@@ -24,6 +25,8 @@ export function GlobeScreen({ entries, active, onOpenSettings }: Props) {
   const { openCountry } = useUI()
 
   const stats = useMemo(() => computeStats(entries), [entries])
+  const allStops = useAllStops()
+  const points = useMemo(() => (allStops ?? []).filter((s) => s.coords).map((s) => s.coords!), [allStops])
   const visited = useMemo(() => entries.filter((e) => e.status === 'visited').map((e) => e.code).sort(), [entries])
   const visitedSet = useMemo(() => new Set(visited), [visited])
 
@@ -50,6 +53,7 @@ export function GlobeScreen({ entries, active, onOpenSettings }: Props) {
           active={active}
           autoRotate={autoRotate}
           onSelect={openCountry}
+          points={points}
         />
       </Suspense>
 

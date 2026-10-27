@@ -8,6 +8,8 @@ import { normalize, PLACES, placeSubtitle } from '../data/places'
 
 type Props = {
   open: boolean
+  /** Titre de la fiche (« Ajouter un pays » par défaut) */
+  title?: string
   onClose: () => void
   /** Codes déjà visités (affichés avec une coche) */
   visited: Set<string>
@@ -15,7 +17,7 @@ type Props = {
 }
 
 /** Recherche d'un pays ou territoire à ajouter, avec autocomplétion en français */
-export function AddCountrySheet({ open, onClose, visited, onPick }: Props) {
+export function AddCountrySheet({ open, title = 'Ajouter un pays', onClose, visited, onPick }: Props) {
   const [query, setQuery] = useState('')
 
   const results = useMemo(() => {
@@ -36,7 +38,7 @@ export function AddCountrySheet({ open, onClose, visited, onPick }: Props) {
     <BottomSheet
       open={open}
       onClose={close}
-      title="Ajouter un pays"
+      title={title}
       leading={
         <Button variant="plain" onClick={close}>
           Annuler

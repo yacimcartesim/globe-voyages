@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Download, HardDrive, Info, RotateCw, ShieldCheck, Upload } from 'lucide-react'
+import { Download, FlaskConical, HardDrive, Info, RotateCw, ShieldCheck, Upload } from 'lucide-react'
 import { BottomSheet } from '../ui/BottomSheet'
 import { Row, Section } from '../ui/GroupedList'
 import { Button, Switch } from '../ui/controls'
 import { usePreference } from '../hooks/usePreference'
+import { clearDemo, loadDemo, useDemoLoaded } from '../db/demo'
 import { formatBytes, getStorageInfo, isStandalone, isStoragePersisted, type StorageInfo } from '../services/storage'
 
 type Props = { open: boolean; onClose: () => void }
@@ -12,6 +13,8 @@ export function SettingsSheet({ open, onClose }: Props) {
   const [autoRotate, setAutoRotate] = usePreference('autoRotate', true)
   const [storage, setStorage] = useState<StorageInfo | null>(null)
   const [persisted, setPersisted] = useState(false)
+  const demoLoaded = useDemoLoaded()
+  const [demoBusy, setDemoBusy] = useState(false)
 
   // Rafraîchit les infos de stockage à chaque ouverture
   useEffect(() => {
@@ -70,6 +73,32 @@ export function SettingsSheet({ open, onClose }: Props) {
             iconColor={persisted ? 'var(--green)' : 'var(--orange)'}
             label="Stockage protégé"
             detail={persisted ? 'Oui' : 'Non'}
+          />
+        </Section>
+
+        <Section
+          header="Mode démo"
+          footer={
+            demoLoaded
+              ? 'Les données de démo sont chargées. Les effacer ne touche pas à tes propres données.'
+              : 'Ajoute un exemple (road trip dans l’Ouest américain, quelques pays) pour tester l’app. Effaçable à tout moment.'
+          }
+        >
+          <Row
+            icon={FlaskConical}
+            iconColor="var(--teal)"
+            label={demoBusy ? 'Un instant…' : demoLoaded ? 'Effacer les données de démo' : 'Charger les données de démo'}
+            destructive={demoLoaded}
+            disabled={demoBusy}
+            onClick={async () => {
+              setDemoBusy(true)
+              try {
+                if (demoLoaded) await clearDemo()
+                else await loadDemo()
+              } finally {
+                setDemoBusy(false)
+              }
+            }}
           />
         </Section>
 
