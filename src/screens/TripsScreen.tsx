@@ -52,7 +52,7 @@ export function TripsScreen() {
                 transition={spring}
                 className="relative block h-48 w-full overflow-hidden rounded-[22px] text-left shadow-soft"
               >
-                <TripCover countries={trip.countries} />
+                <TripCover countries={trip.countries} coverPhotoId={trip.coverPhotoId} />
                 <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                   <div className="mb-2 flex gap-1.5">
                     {trip.countries.slice(0, 6).map((c) => (

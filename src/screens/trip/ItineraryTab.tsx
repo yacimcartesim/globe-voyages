@@ -14,6 +14,8 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities'
 import { Button, EmptyState } from '../../ui/controls'
 import { StopSheet } from '../StopSheet'
+import { PhotoViewer } from './PhotoViewer'
+import { usePhotos } from '../../db/photos'
 import { stopType, transport } from '../../data/stopTypes'
 import { dateOfDay, formatDay, reorderStops, useStops } from '../../db/trips'
 import type { Stop, Trip } from '../../db/schema'
@@ -24,6 +26,9 @@ const ItineraryMap = lazy(() => import('../../map/ItineraryMap'))
 /** Onglet « Itinéraire » : carte + liste jour par jour, réordonnable par glisser-déposer */
 export function ItineraryTab({ trip }: { trip: Trip }) {
   const stops = useStops(trip.id) ?? []
+  const photos = usePhotos(trip.id) ?? []
+  const geoPhotos = photos.filter((p) => p.coords)
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null)
   const [selected, setSelected] = useState<string | null>(null)
   const [editing, setEditing] = useState<Stop | 'new' | null>(null)
   // Ordre affiché pendant un déplacement (avant l'enregistrement)
@@ -55,7 +60,13 @@ export function ItineraryTab({ trip }: { trip: Trip }) {
       <div className="mx-4 mb-6 h-72 overflow-hidden rounded-[22px] bg-elevated shadow-soft">
         {stops.some((s) => s.coords) ? (
           <Suspense fallback={null}>
-            <ItineraryMap stops={list} selectedId={selected} onSelect={setSelected} />
+            <ItineraryMap
+              stops={list}
+              selectedId={selected}
+              onSelect={setSelected}
+              photos={geoPhotos}
+              onPhotoClick={(id) => setViewerIndex(geoPhotos.findIndex((p) => p.id === id))}
+            />
           </Suspense>
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-2 text-label-2">
@@ -104,6 +115,8 @@ export function ItineraryTab({ trip }: { trip: Trip }) {
           </div>
         </>
       )}
+
+      <PhotoViewer trip={trip} photos={geoPhotos} stops={stops} index={viewerIndex} onClose={() => setViewerIndex(null)} />
 
       <StopSheet
         open={editing !== null}

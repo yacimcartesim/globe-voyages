@@ -3,7 +3,8 @@ import { LngLatBounds, Map as MapLibre, Marker, setWorkerUrl, type GeoJSONSource
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { WifiOff } from 'lucide-react'
-import type { Stop } from '../db/schema'
+import type { Photo, Stop } from '../db/schema'
+import { photoBlob } from '../db/photos'
 import { stopType } from '../data/stopTypes'
 import { useColorScheme } from '../hooks/useColorScheme'
 
@@ -23,6 +24,9 @@ type Props = {
   stops: Stop[]
   selectedId: string | null
   onSelect: (id: string) => void
+  /** Photos géolocalisées : petites vignettes sur la carte */
+  photos?: Photo[]
+  onPhotoClick?: (id: string) => void
 }
 
 /** Noms des lieux en français quand ils existent dans OpenStreetMap */
@@ -80,7 +84,7 @@ function addRouteLayers(map: MapLibre, stops: Stop[], blue: string) {
   })
 }
 
-export default function ItineraryMap({ stops, selectedId, onSelect }: Props) {
+export default function ItineraryMap({ stops, selectedId, onSelect, photos = [], onPhotoClick }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MapLibre | null>(null)
   const markersRef = useRef<Map<string, Marker>>(new Map())
@@ -88,6 +92,8 @@ export default function ItineraryMap({ stops, selectedId, onSelect }: Props) {
   stopsRef.current = stops
   const onSelectRef = useRef(onSelect)
   onSelectRef.current = onSelect
+  const onPhotoRef = useRef(onPhotoClick)
+  onPhotoRef.current = onPhotoClick
   const scheme = useColorScheme()
   const [offline, setOffline] = useState(false)
 
@@ -166,6 +172,35 @@ export default function ItineraryMap({ stops, selectedId, onSelect }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key])
+
+  // Vignettes des photos géolocalisées (sous les marqueurs d'étapes)
+  const photoKey = photos.map((p) => `${p.id}:${p.coords?.lat}`).join('|')
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    const urls: string[] = []
+    const markers = photos
+      .filter((p) => p.coords)
+      .map((p) => {
+        const url = URL.createObjectURL(photoBlob(p, 'thumb'))
+        urls.push(url)
+        const el = document.createElement('button')
+        el.type = 'button'
+        el.className = 'photo-marker'
+        el.style.backgroundImage = `url(${url})`
+        el.setAttribute('aria-label', p.caption || 'Photo')
+        el.addEventListener('click', (e) => {
+          e.stopPropagation()
+          onPhotoRef.current?.(p.id)
+        })
+        return new Marker({ element: el }).setLngLat([p.coords!.lng, p.coords!.lat]).addTo(map)
+      })
+    return () => {
+      markers.forEach((m) => m.remove())
+      urls.forEach((u) => URL.revokeObjectURL(u))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [photoKey])
 
   // Étape sélectionnée : la carte s'y centre
   useEffect(() => {

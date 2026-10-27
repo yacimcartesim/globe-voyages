@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Download, FlaskConical, HardDrive, Info, RotateCw, ShieldCheck, Upload } from 'lucide-react'
+import { Download, FlaskConical, MapPinned, HardDrive, Info, RotateCw, ShieldCheck, Upload } from 'lucide-react'
 import { BottomSheet } from '../ui/BottomSheet'
 import { Row, Section } from '../ui/GroupedList'
 import { Button, Switch } from '../ui/controls'
@@ -11,6 +11,7 @@ type Props = { open: boolean; onClose: () => void }
 
 export function SettingsSheet({ open, onClose }: Props) {
   const [autoRotate, setAutoRotate] = usePreference('autoRotate', true)
+  const [photoMatchKm, setPhotoMatchKm] = usePreference('photoMatchKm', 30)
   const [storage, setStorage] = useState<StorageInfo | null>(null)
   const [persisted, setPersisted] = useState(false)
   const demoLoaded = useDemoLoaded()
@@ -41,6 +42,28 @@ export function SettingsSheet({ open, onClose }: Props) {
             iconColor="var(--indigo)"
             label="Rotation automatique"
             accessory={<Switch checked={autoRotate} onChange={setAutoRotate} label="Rotation automatique" />}
+          />
+        </Section>
+
+        <Section header="Photos" footer="Une photo géolocalisée est rattachée à l’étape la plus proche si elle est à moins de cette distance.">
+          <Row
+            icon={MapPinned}
+            iconColor="var(--red)"
+            label="Rattachement automatique"
+            accessory={
+              <select
+                aria-label="Distance de rattachement"
+                value={photoMatchKm}
+                onChange={(e) => setPhotoMatchKm(Number(e.target.value))}
+                className="h-11 appearance-none bg-transparent text-right text-[17px] text-label-2 outline-none"
+              >
+                {[5, 10, 30, 50, 100].map((km) => (
+                  <option key={km} value={km}>
+                    {km} km
+                  </option>
+                ))}
+              </select>
+            }
           />
         </Section>
 

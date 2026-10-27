@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Camera, Ellipsis, Pencil, Trash2, Wallet, X } from 'lucide-react'
+import { Ellipsis, Pencil, Trash2, Wallet, X } from 'lucide-react'
 import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react'
 import { createPortal } from 'react-dom'
 import { EmptyState, SegmentedControl } from '../../ui/controls'
@@ -8,6 +8,7 @@ import { TripCover } from '../../ui/TripCover'
 import { spring } from '../../ui/motion'
 import { ItineraryTab } from './ItineraryTab'
 import { PracticalTab } from './PracticalTab'
+import { PhotosTab } from './PhotosTab'
 import { TripFormSheet } from '../TripFormSheet'
 import { deleteTrip, formatRange, tripLength, useTrip } from '../../db/trips'
 import { useUI } from '../../state/ui'
@@ -68,7 +69,7 @@ export function TripSheet() {
           <div ref={scrollRef} className="no-scrollbar h-full overflow-y-auto" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 32px)' }}>
             {/* En-tête */}
             <header className="relative h-64 text-white" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-              <TripCover countries={trip.countries} />
+              <TripCover countries={trip.countries} coverPhotoId={trip.coverPhotoId} />
               <div className="absolute inset-x-0 flex justify-between px-4" style={{ top: 'calc(env(safe-area-inset-top) + 8px)' }}>
                 <HeaderButton label="Fermer" onClick={closeTrip}>
                   <X size={20} strokeWidth={2.2} />
@@ -142,9 +143,7 @@ export function TripSheet() {
             <div className="pt-3">
               {tab === 'itinerary' && <ItineraryTab trip={trip} />}
               {tab === 'practical' && <PracticalTab trip={trip} />}
-              {tab === 'photos' && (
-                <EmptyState icon={Camera} title="Photos" text="La galerie photo de ce voyage arrive en phase 4." />
-              )}
+              {tab === 'photos' && <PhotosTab trip={trip} />}
               {tab === 'budget' && (
                 <EmptyState
                   icon={Wallet}

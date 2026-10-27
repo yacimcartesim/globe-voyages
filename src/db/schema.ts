@@ -96,11 +96,16 @@ export type Photo = {
   id: Id
   tripId: Id
   stopId?: Id
-  /** Image compressée (~2000 px) et miniature (~400 px) */
-  blob: Blob
-  thumb: Blob
+  /**
+   * Image compressée (~2000 px) et miniature (~400 px), en données binaires JPEG.
+   * (Pas en Blob : WebKit/Safari refuse parfois d'enregistrer des Blob dans IndexedDB.)
+   */
+  image: ArrayBuffer
+  thumb: ArrayBuffer
+  mime: string
   caption?: string
-  takenAt?: ISODateTime
+  /** Heure locale de prise de vue, sans fuseau (« 2026-07-09T07:12:00 ») */
+  takenAt?: string
   coords?: LatLng
 }
 
