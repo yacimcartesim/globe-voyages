@@ -182,13 +182,19 @@ export function formatRange(start?: string, end?: string): string {
   return `${fmtFull.format(a)} – ${fmtFull.format(b)}`
 }
 
-/** Sépare « Léa, Tom et Max » en noms individuels */
+/**
+ * Sépare « Léa Tom, Max et Zoé » en prénoms individuels : un espace, une virgule
+ * ou « et » séparent deux prénoms (les prénoms composés s'écrivent avec un tiret : Jean-Pierre)
+ */
 export function splitCompanions(text?: string): string[] {
   return (text ?? '')
-    .split(/\s*(?:,|;|&|\+|\bet\b)\s*/i)
+    .split(/[\s,;&+]+/)
     .map((n) => n.trim())
-    .filter(Boolean)
+    .filter((n) => n && !/^(et|and)$/i.test(n))
 }
+
+/** Écriture propre pour l'enregistrement : « Léa, Tom, Max » */
+export const formatCompanions = (text?: string) => splitCompanions(text).join(', ') || undefined
 
 /** Compagnons des voyages précédents, les plus fréquents d'abord */
 export function useCompanionNames(): string[] {

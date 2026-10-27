@@ -48,7 +48,8 @@ test('compagnons proposés et calendrier rapide', async ({ page }, info) => {
   const picker = page.getByRole('dialog', { name: 'Pays du voyage' })
   await picker.getByPlaceholder('Pays ou territoire').fill('guadel')
   await picker.getByRole('button', { name: /^Guadeloupe/ }).click()
-  await form.getByLabel('Compagnons de voyage').fill('Léa et Tom')
+  // Un espace sépare deux prénoms
+  await form.getByLabel('Compagnons de voyage').fill('Léa Tom')
   await form.getByRole('button', { name: 'Créer' }).click()
   const trip = page.getByRole('dialog', { name: 'Guadeloupe' })
   await expect(trip).toBeVisible()

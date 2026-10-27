@@ -9,7 +9,7 @@ import { Flag } from '../ui/Flag'
 import { AddCountrySheet } from './AddCountrySheet'
 import { placeName } from '../data/places'
 import { CURRENCIES, currencyForCountry, currencyName } from '../data/currencies'
-import { createTrip, splitCompanions, updateTrip, useCompanionNames, type TripDraft } from '../db/trips'
+import { createTrip, formatCompanions, splitCompanions, updateTrip, useCompanionNames, type TripDraft } from '../db/trips'
 import { markVisited } from '../db/countries'
 import type { Trip } from '../db/schema'
 
@@ -71,7 +71,7 @@ export function TripFormSheet({ open, onClose, trip, initialCountries, onCreated
 
   const save = async () => {
     if (!valid || datesInvalid) return
-    const clean = { ...draft, title: draft.title.trim(), companions: draft.companions?.trim() || undefined }
+    const clean = { ...draft, title: draft.title.trim(), companions: formatCompanions(draft.companions) }
     if (trip) {
       await updateTrip(trip.id, clean)
       onClose()
@@ -175,7 +175,7 @@ export function TripFormSheet({ open, onClose, trip, initialCountries, onCreated
           }
         >
           <TextInput
-            placeholder="Compagnons de voyage"
+            placeholder="Prénoms (ex. Léa Tom)"
             aria-label="Compagnons de voyage"
             value={draft.companions ?? ''}
             onChange={(e) => set({ companions: e.target.value })}
