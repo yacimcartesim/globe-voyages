@@ -86,12 +86,14 @@ export function GlobeScreen({ entries, active, onOpenSettings }: Props) {
               </p>
             )}
           </div>
-          <div className="pointer-events-auto mt-0.5 flex gap-2">
-            <IconButton icon={Settings} label="Réglages" onClick={onOpenSettings} />
-            <IconButton icon={Plus} label="Ajouter un pays" filled onClick={() => setAddOpen(true)} />
+          <div className="mt-0.5 flex flex-col items-end gap-2">
+            <div className="pointer-events-auto flex gap-2">
+              <IconButton icon={Settings} label="Réglages" onClick={onOpenSettings} />
+              <IconButton icon={Plus} label="Ajouter un pays" filled onClick={() => setAddOpen(true)} />
+            </div>
+            <BackupReminder onBackup={onOpenSettings} />
           </div>
         </div>
-        <BackupReminder onBackup={onOpenSettings} />
       </header>
 
       <AddCountrySheet open={addOpen} onClose={() => setAddOpen(false)} visited={visitedSet} onPick={pick} />

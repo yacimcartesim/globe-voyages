@@ -181,3 +181,29 @@ export function formatRange(start?: string, end?: string): string {
   if (a.getFullYear() === b.getFullYear()) return `${fmtShort.format(a)} – ${fmtFull.format(b)}`
   return `${fmtFull.format(a)} – ${fmtFull.format(b)}`
 }
+
+/** Sépare « Léa, Tom et Max » en noms individuels */
+export function splitCompanions(text?: string): string[] {
+  return (text ?? '')
+    .split(/\s*(?:,|;|&|\+|\bet\b)\s*/i)
+    .map((n) => n.trim())
+    .filter(Boolean)
+}
+
+/** Compagnons des voyages précédents, les plus fréquents d'abord */
+export function useCompanionNames(): string[] {
+  return (
+    useLiveQuery(async () => {
+      const counts = new Map<string, { name: string; n: number }>()
+      for (const t of await db.trips.toArray()) {
+        for (const name of splitCompanions(t.companions)) {
+          const key = name.toLocaleLowerCase('fr')
+          const c = counts.get(key) ?? { name, n: 0 }
+          c.n++
+          counts.set(key, c)
+        }
+      }
+      return [...counts.values()].sort((a, b) => b.n - a.n || a.name.localeCompare(b.name, 'fr')).map((c) => c.name)
+    }, []) ?? []
+  )
+}

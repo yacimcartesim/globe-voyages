@@ -1,6 +1,7 @@
 // Base de données locale (IndexedDB via Dexie).
 
 import Dexie, { type EntityTable } from 'dexie'
+import { RENAMED_CODES_V2, renameCodeV2 } from './schema'
 import type { CountryEntry, Expense, MetaEntry, Photo, QuickNote, Stop, Trip, WishPlace } from './schema'
 
 export const db = new Dexie('globe-voyages') as Dexie & {
@@ -25,6 +26,23 @@ db.version(1).stores({
   notes: '&id, tripId, createdAt',
   wishPlaces: '&id, countryCode',
   meta: '&key',
+})
+
+// Version 2 : codes de pays renommés (Royaume-Uni → nations), même structure
+db.version(2).stores({}).upgrade(async (tx) => {
+  for (const [from, to] of Object.entries(RENAMED_CODES_V2)) {
+    const old = await tx.table('countries').get(from)
+    if (old) {
+      await tx.table('countries').delete(from)
+      if (!(await tx.table('countries').get(to))) await tx.table('countries').add({ ...old, code: to })
+    }
+  }
+  await tx.table('trips').toCollection().modify((t: Trip) => {
+    t.countries = [...new Set(t.countries.map(renameCodeV2))]
+  })
+  await tx.table('wishPlaces').toCollection().modify((w: WishPlace) => {
+    if (w.countryCode) w.countryCode = renameCodeV2(w.countryCode)
+  })
 })
 
 /** Identifiant unique (crypto.randomUUID n'existe pas en http sur le réseau local) */

@@ -38,9 +38,14 @@ export function CountrySheet({ entries }: { entries: CountryEntry[] }) {
             <Flag code={code} size={112} radius={14} />
             <h2 className="text-title-1 mt-4">{placeName(code)}</h2>
             <p className="text-subhead mt-1 text-label-2">{placeSubtitle(code)}</p>
-            {place && !place.counted && (
+            {place?.kind === 'territory' && (
               <p className="text-footnote mt-2 max-w-72 text-label-2">
                 Ce territoire s’affiche sur le globe mais ne compte pas dans les 195 pays.
+              </p>
+            )}
+            {(place?.kind === 'ile' || place?.kind === 'nation') && place.parent && (
+              <p className="text-footnote mt-2 max-w-72 text-label-2">
+                Compte pour {placeName(place.parent)} dans les 195 pays.
               </p>
             )}
           </div>

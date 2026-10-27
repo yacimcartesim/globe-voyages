@@ -3,12 +3,13 @@ import { Plus, X } from 'lucide-react'
 import { BottomSheet } from '../ui/BottomSheet'
 import { Row, Section } from '../ui/GroupedList'
 import { Button, Switch } from '../ui/controls'
-import { DateInput, FieldRow, InlineInput, TextInput } from '../ui/forms'
+import { FieldRow, TextInput } from '../ui/forms'
+import { DateField } from '../ui/DateField'
 import { Flag } from '../ui/Flag'
 import { AddCountrySheet } from './AddCountrySheet'
 import { placeName } from '../data/places'
 import { CURRENCIES, currencyForCountry, currencyName } from '../data/currencies'
-import { createTrip, updateTrip, type TripDraft } from '../db/trips'
+import { createTrip, splitCompanions, updateTrip, useCompanionNames, type TripDraft } from '../db/trips'
 import { markVisited } from '../db/countries'
 import type { Trip } from '../db/schema'
 
@@ -46,6 +47,15 @@ export function TripFormSheet({ open, onClose, trip, initialCountries, onCreated
     setMarkAsVisited(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
+
+  // Compagnons des voyages précédents, proposés en un toucher
+  const knownCompanions = useCompanionNames()
+  const current = splitCompanions(draft.companions).map((n) => n.toLocaleLowerCase('fr'))
+  const suggestions = knownCompanions.filter((n) => !current.includes(n.toLocaleLowerCase('fr'))).slice(0, 12)
+  const addCompanion = (name: string) => {
+    const names = splitCompanions(draft.companions)
+    set({ companions: [...names, name].join(', ') })
+  }
 
   const set = (changes: Partial<TripDraft>) => setDraft((d) => ({ ...d, ...changes }))
 
@@ -125,16 +135,51 @@ export function TripFormSheet({ open, onClose, trip, initialCountries, onCreated
         </Section>
 
         <Section footer={datesInvalid ? 'La date de fin est avant la date de début.' : undefined}>
-          <FieldRow label="Début">
-            <DateInput value={draft.start ?? ''} onChange={(e) => set({ start: e.target.value || undefined })} />
-          </FieldRow>
-          <FieldRow label="Fin">
-            <DateInput
-              value={draft.end ?? ''}
-              min={draft.start}
-              onChange={(e) => set({ end: e.target.value || undefined })}
-            />
-          </FieldRow>
+          <DateField
+            label="Début"
+            value={draft.start}
+            clearable
+            onChange={(start: string | undefined) =>
+              // Une date de fin devenue antérieure au début est effacée
+              set({ start, ...(start && draft.end && draft.end < start ? { end: undefined } : {}) })
+            }
+          />
+          <DateField
+            label="Fin"
+            value={draft.end}
+            min={draft.start}
+            openAt={draft.start}
+            clearable
+            onChange={(end) => set({ end })}
+          />
+        </Section>
+
+        <Section
+          header="Avec"
+          footer={
+            suggestions.length > 0 && (
+              <span className="-mx-1 mt-1 flex flex-wrap gap-2">
+                {suggestions.map((name) => (
+                  <button
+                    key={name}
+                    type="button"
+                    onClick={() => addCompanion(name)}
+                    className="flex min-h-9 items-center gap-1 rounded-full bg-elevated px-3.5 text-[15px] font-medium text-label active:opacity-60"
+                  >
+                    <Plus size={15} strokeWidth={2.4} className="text-blue" />
+                    {name}
+                  </button>
+                ))}
+              </span>
+            )
+          }
+        >
+          <TextInput
+            placeholder="Compagnons de voyage"
+            aria-label="Compagnons de voyage"
+            value={draft.companions ?? ''}
+            onChange={(e) => set({ companions: e.target.value })}
+          />
         </Section>
 
         <Section footer="Devise dans laquelle tu paies la plupart du temps (pour le budget).">
@@ -153,13 +198,6 @@ export function TripFormSheet({ open, onClose, trip, initialCountries, onCreated
                 </option>
               ))}
             </select>
-          </FieldRow>
-          <FieldRow label="Avec">
-            <InlineInput
-              placeholder="Compagnons de voyage"
-              value={draft.companions ?? ''}
-              onChange={(e) => set({ companions: e.target.value })}
-            />
           </FieldRow>
         </Section>
 

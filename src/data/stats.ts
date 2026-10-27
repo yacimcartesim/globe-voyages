@@ -3,10 +3,13 @@
 import { COUNTRIES, COUNTRY_BY_ISO2 } from './countries'
 import { CONTINENTS, type ContinentId } from './continents'
 import type { CountryEntry } from '../db/schema'
+import { countedCountry, getPlace } from './places'
 
 export type Stats = {
-  /** Pays comptés (parmi les 195) */
+  /** Pays comptés (parmi les 195) ; une île ou une nation visitée compte pour son pays */
   visitedCountries: string[]
+  /** Îles et nations visitées (Tenerife, Écosse…) */
+  visitedParts: string[]
   /** Territoires visités (non comptés) */
   visitedTerritories: string[]
   wishlist: string[]
@@ -17,12 +20,14 @@ export type Stats = {
 
 export function computeStats(entries: CountryEntry[]): Stats {
   const visited = entries.filter((e) => e.status === 'visited').map((e) => e.code)
-  const visitedCountries = visited.filter((c) => COUNTRY_BY_ISO2.has(c))
-  const visitedTerritories = visited.filter((c) => !COUNTRY_BY_ISO2.has(c))
+  const visitedCountries = [...new Set(visited.map(countedCountry).filter((c): c is string => !!c))]
+  const visitedParts = visited.filter((c) => !COUNTRY_BY_ISO2.has(c) && countedCountry(c))
+  const visitedTerritories = visited.filter((c) => getPlace(c)?.kind === 'territory')
   const total = COUNTRIES.length
 
   return {
     visitedCountries,
+    visitedParts,
     visitedTerritories,
     wishlist: entries.filter((e) => e.status === 'wishlist').map((e) => e.code),
     total,

@@ -71,8 +71,15 @@ test('création d’un voyage et ajout d’une étape', async ({ page }, info) =
   await picker.getByPlaceholder('Pays ou territoire').fill('portu')
   await picker.getByRole('button', { name: /^Portugal/ }).click()
   await expect(form.locator('select')).toHaveValue('EUR')
-  await form.locator('input[type=date]').first().fill('2026-05-01')
-  await form.locator('input[type=date]').nth(1).fill('2026-05-03')
+  // Calendrier : titre → année → mois → jour ; la fin s'ouvre sur le mois du début
+  await form.getByRole('button', { name: /^Début/ }).click()
+  await form.getByRole('button', { name: 'Choisir l’année et le mois' }).click()
+  await form.getByRole('button', { name: '2026', exact: true }).click()
+  await form.getByRole('button', { name: 'mai', exact: true }).click()
+  await form.getByRole('button', { name: 'vendredi 1 mai 2026' }).click()
+  await form.getByRole('button', { name: /^Fin/ }).click()
+  await expect(form.getByRole('button', { name: 'Choisir l’année et le mois' })).toHaveText(/mai 2026/)
+  await form.getByRole('button', { name: 'dimanche 3 mai 2026' }).click()
   await page.screenshot({ path: shot('15-nouveau-voyage', info.project.name) })
   await form.getByRole('button', { name: 'Créer' }).click()
 

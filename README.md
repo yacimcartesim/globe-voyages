@@ -99,6 +99,8 @@ Exemples de modifications courantes :
 |---|---|
 | Changer le continent d'un pays, ou la liste des 195 | `src/data/countries.ts` |
 | Ajouter/renommer un territoire | `src/data/territories.ts` |
+| Ajouter une île ou une région affichée à part (Tenerife, Corse, Écosse…) | `src/data/parts.json`, puis `npm run geo` |
+| Changer le drapeau d'une île ou d'un territoire | `src/data/flags/` (SVG) et `src/data/parts.json` |
 | Changer les couleurs du globe (océan, pays, wishlist) | `src/globe/texture.ts` (`PALETTE_LIGHT`, `PALETTE_DARK`) |
 | Changer les couleurs de l'app | `src/index.css` |
 | Ajouter une devise | `src/data/currencies.ts` |
@@ -140,7 +142,7 @@ npx playwright install webkit
 npm run test:visual
 ```
 
-24 tests vérifient l'app dans le moteur de Safari, en taille iPhone 15, en clair et en sombre : globe et drapeaux, voyages, carte, photos (EXIF, rattachement), budget, notes, wishlist, sauvegarde (export → import) et guide PDF. Les captures d'écran sont enregistrées dans `tests/screenshots/`.
+30 tests vérifient l'app dans le moteur de Safari, en taille iPhone 15, en clair et en sombre : globe et drapeaux, voyages, carte, photos (EXIF, rattachement), budget, notes, wishlist, sauvegarde (export → import), guide PDF, îles et nations, calendrier, compagnons et migration des anciennes données. Les captures d'écran sont enregistrées dans `tests/screenshots/`.
 
 ## 7. Services gratuits utilisés et limites
 

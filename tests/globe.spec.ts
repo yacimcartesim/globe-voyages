@@ -60,7 +60,7 @@ test('globe avec plusieurs pays, fiche pays et statistiques', async ({ page }, i
   await expect(page.getByText('0 pays', { exact: true })).toBeVisible()
   await seedVisited(
     page,
-    ['fr', 'es', 'it', 'de', 'gb', 'us', 'ru', 'jp', 'br', 'va', 'mt', 'ma', 'gl', 'gf', 'no', 'ca', 'au', 'fj'],
+    ['fr', 'es', 'it', 'de', 'gb-eng', 'gb-sct', 'es-tenerife', 'us', 'ru', 'jp', 'br', 'va', 'mt', 'ma', 'gl', 'gf', 'no', 'ca', 'au', 'fj'],
     ['nz', 'pe', 'is'],
   )
   await page.reload()

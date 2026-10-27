@@ -3,7 +3,8 @@ import { Loader2, Trash2 } from 'lucide-react'
 import { BottomSheet } from '../../ui/BottomSheet'
 import { Row, Section } from '../../ui/GroupedList'
 import { Button } from '../../ui/controls'
-import { ChipPicker, ChipSection, DateInput, FieldRow, InlineInput, TextInput } from '../../ui/forms'
+import { ChipPicker, ChipSection, FieldRow, InlineInput, TextInput } from '../../ui/forms'
+import { DateField } from '../../ui/DateField'
 import { CATEGORIES, deleteExpense, saveExpense } from '../../db/expenses'
 import { CURRENCIES, currencyName } from '../../data/currencies'
 import { formatMoney, parseAmount, rateToEUR, round2, type RateResult } from '../../services/currency'
@@ -158,16 +159,15 @@ export function ExpenseSheet({ open, onClose, trip, stops, expense, defaultDate 
         </ChipSection>
 
         <Section>
-          <FieldRow label="Date">
-            <DateInput
-              value={date}
-              onChange={(e) => {
-                if (!e.target.value) return
-                setDate(e.target.value)
-                setRateTouched(false)
-              }}
-            />
-          </FieldRow>
+          <DateField
+            label="Date"
+            value={date}
+            onChange={(d) => {
+              if (!d) return
+              setDate(d)
+              setRateTouched(false)
+            }}
+          />
           <FieldRow label="Étape">
             <select
               value={stopId}

@@ -2,14 +2,15 @@
 //
 // - Télécharge le fichier source s'il n'est pas déjà là (une seule fois)
 // - Identifie chaque zone par son code ISO alpha-2 (« fr », « gf », « gl »…)
-// - Fusionne les découpages internes inutiles (régions belges, nations du Royaume-Uni,
-//   Açores/Madère avec le Portugal…) en gardant à part les territoires (Guyane, Réunion,
-//   Groenland, Svalbard…)
+// - Fusionne les découpages internes inutiles (régions belges…) en gardant à part les
+//   territoires (Guyane, Réunion, Groenland, Svalbard…)
+// - Sépare les îles et nations de src/data/parts.json (Tenerife, Corse, Écosse…)
 // - Simplifie légèrement et écrit src/data/world.topo.json (embarqué dans l'app, hors-ligne)
 //
 // Lancer avec : npm run geo
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { geoCentroid } from 'd3-geo'
 import { topology } from 'topojson-server'
 import { mergeArcs, quantize } from 'topojson-client'
 import { presimplify, quantile, simplify } from 'topojson-simplify'
@@ -28,9 +29,37 @@ if (!existsSync(CACHE)) {
 }
 
 const source = JSON.parse(readFileSync(CACHE, 'utf8'))
+const { parts } = JSON.parse(readFileSync('src/data/parts.json', 'utf8'))
+
+// Îles et nations : zone Natural Earth entière (« unit ») ou polygones du pays parent
+// dont le centre tombe dans un rectangle (« bbox »)
+for (const part of parts) {
+  if (part.unit) {
+    const f = source.features.find((x) => x.properties.NAME === part.unit)
+    if (!f) throw new Error(`Zone introuvable : ${part.unit}`)
+    f.properties.PART = part.code
+    continue
+  }
+  const [w, s, e, n] = part.bbox
+  const inBox = (rings) => {
+    const [x, y] = geoCentroid({ type: 'Polygon', coordinates: rings })
+    return x >= w && x <= e && y >= s && y <= n
+  }
+  const parent = source.features.find((x) => codeOf(x.properties) === part.parent && x.geometry.type === 'MultiPolygon'
+    && x.geometry.coordinates.some(inBox))
+  if (!parent) throw new Error(`Île introuvable : ${part.name}`)
+  const polys = parent.geometry.coordinates
+  parent.geometry.coordinates = polys.filter((r) => !inBox(r))
+  source.features.push({
+    type: 'Feature',
+    properties: { ...parent.properties, PART: part.code, NAME_FR: part.name },
+    geometry: { type: 'MultiPolygon', coordinates: polys.filter(inBox) },
+  })
+}
 
 // Code de chaque zone : ISO alpha-2 « étendu » de Natural Earth (gère France, Norvège, Kosovo…)
 function codeOf(p) {
+  if (p.PART) return p.PART
   const c = p.ISO_A2_EH
   return c && c !== '-99' ? c.toLowerCase() : null
 }

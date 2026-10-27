@@ -1,18 +1,26 @@
 // Drapeaux SVG (paquet flag-icons, format 4:3), embarqués dans l'app pour le hors-ligne.
+// Drapeaux régionaux absents de flag-icons (Canaries, Corse, Guadeloupe…) : src/data/flags/x-*.svg
 
-const FLAG_URLS = import.meta.glob('../../node_modules/flag-icons/flags/4x3/*.svg', {
-  query: '?url',
-  import: 'default',
-  eager: true,
-}) as Record<string, string>
+import partsData from './parts.json'
+
+const FLAG_URLS = {
+  ...import.meta.glob('../../node_modules/flag-icons/flags/4x3/*.svg', { query: '?url', import: 'default', eager: true }),
+  ...import.meta.glob('./flags/*.svg', { query: '?url', import: 'default', eager: true }),
+} as Record<string, string>
 
 const BY_CODE = new Map(
   Object.entries(FLAG_URLS).map(([path, url]) => [path.slice(path.lastIndexOf('/') + 1, -4), url]),
 )
 
-/** Adresse du drapeau SVG d'un pays (code ISO alpha-2 en minuscules) */
+// Îles et territoires : leur propre drapeau, sinon celui de leur pays
+const ALIAS = new Map<string, string>([
+  ...partsData.parts.map((p) => [p.code, p.flag ?? p.parent] as [string, string]),
+  ...Object.entries(partsData.territoryFlags),
+])
+
+/** Adresse du drapeau SVG d'un pays, d'une île ou d'un territoire (code en minuscules) */
 export function flagUrl(code: string): string | undefined {
-  return BY_CODE.get(code)
+  return BY_CODE.get(ALIAS.get(code) ?? code)
 }
 
 const imageCache = new Map<string, Promise<HTMLImageElement | null>>()

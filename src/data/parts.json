@@ -1,0 +1,64 @@
+{
+  "_": "Îles et nations affichées à part sur le globe. Elles comptent pour leur pays dans les 195 (visiter Tenerife compte l'Espagne). Utilisé par scripts/build-geo.mjs (découpage des frontières) et par l'app. « unit » = zone Natural Earth (nom anglais), « bbox » = [ouest, sud, est, nord] où chercher les polygones de l'île dans le pays parent, « flag » = drapeau propre (src/data/flags ou flag-icons), sinon celui du pays.",
+  "parts": [
+    { "code": "gb-eng", "name": "Angleterre", "parent": "gb", "kind": "nation", "unit": "England", "flag": "gb-eng" },
+    { "code": "gb-sct", "name": "Écosse", "parent": "gb", "kind": "nation", "unit": "Scotland", "flag": "gb-sct" },
+    { "code": "gb-wls", "name": "Pays de Galles", "parent": "gb", "kind": "nation", "unit": "Wales", "flag": "gb-wls" },
+    { "code": "gb-nir", "name": "Irlande du Nord", "parent": "gb", "kind": "nation", "unit": "N. Ireland", "flag": "gb-nir" },
+
+    { "code": "es-majorque", "name": "Majorque", "parent": "es", "kind": "ile", "bbox": [2.2, 39.2, 3.6, 40.0], "flag": "x-baleares" },
+    { "code": "es-minorque", "name": "Minorque", "parent": "es", "kind": "ile", "bbox": [3.7, 39.7, 4.5, 40.2], "flag": "x-baleares" },
+    { "code": "es-ibiza", "name": "Ibiza", "parent": "es", "kind": "ile", "bbox": [1.1, 38.85, 1.7, 39.2], "flag": "x-baleares" },
+    { "code": "es-formentera", "name": "Formentera", "parent": "es", "kind": "ile", "bbox": [1.3, 38.6, 1.7, 38.78], "flag": "x-baleares" },
+    { "code": "es-tenerife", "name": "Tenerife", "parent": "es", "kind": "ile", "bbox": [-17.0, 27.95, -16.1, 28.65], "flag": "x-canaries" },
+    { "code": "es-grande-canarie", "name": "Grande Canarie", "parent": "es", "kind": "ile", "bbox": [-15.9, 27.7, -15.3, 28.25], "flag": "x-canaries" },
+    { "code": "es-lanzarote", "name": "Lanzarote", "parent": "es", "kind": "ile", "bbox": [-13.95, 28.8, -13.3, 29.3], "flag": "x-canaries" },
+    { "code": "es-fuerteventura", "name": "Fuerteventura", "parent": "es", "kind": "ile", "bbox": [-14.6, 28.0, -13.8, 28.8], "flag": "x-canaries" },
+    { "code": "es-la-palma", "name": "La Palma", "parent": "es", "kind": "ile", "bbox": [-18.1, 28.4, -17.6, 28.9], "flag": "x-canaries" },
+    { "code": "es-la-gomera", "name": "La Gomera", "parent": "es", "kind": "ile", "bbox": [-17.4, 28.0, -17.05, 28.25], "flag": "x-canaries" },
+    { "code": "es-el-hierro", "name": "El Hierro", "parent": "es", "kind": "ile", "bbox": [-18.2, 27.6, -17.8, 27.9], "flag": "x-canaries" },
+
+    { "code": "pt-madere", "name": "Madère", "parent": "pt", "kind": "ile", "unit": "Madeira", "flag": "x-madere" },
+    { "code": "pt-acores", "name": "Açores", "parent": "pt", "kind": "ile", "unit": "Azores", "flag": "x-acores" },
+
+    { "code": "fr-corse", "name": "Corse", "parent": "fr", "kind": "ile", "bbox": [8.5, 41.3, 9.6, 43.1], "flag": "x-corse" },
+
+    { "code": "it-sicile", "name": "Sicile", "parent": "it", "kind": "ile", "bbox": [12.3, 36.6, 15.7, 38.4], "flag": "x-sicile" },
+    { "code": "it-sardaigne", "name": "Sardaigne", "parent": "it", "kind": "ile", "bbox": [8.0, 38.8, 9.9, 41.3], "flag": "x-sardaigne" },
+    { "code": "it-elbe", "name": "Île d’Elbe", "parent": "it", "kind": "ile", "bbox": [10.0, 42.65, 10.5, 42.9] },
+
+    { "code": "gr-crete", "name": "Crète", "parent": "gr", "kind": "ile", "bbox": [23.4, 34.8, 26.4, 35.7] },
+    { "code": "gr-rhodes", "name": "Rhodes", "parent": "gr", "kind": "ile", "bbox": [27.6, 35.8, 28.3, 36.5] },
+    { "code": "gr-corfou", "name": "Corfou", "parent": "gr", "kind": "ile", "bbox": [19.6, 39.3, 20.2, 39.9] },
+    { "code": "gr-santorin", "name": "Santorin", "parent": "gr", "kind": "ile", "bbox": [25.3, 36.3, 25.5, 36.5] },
+    { "code": "gr-mykonos", "name": "Mykonos", "parent": "gr", "kind": "ile", "bbox": [25.25, 37.4, 25.5, 37.5] },
+    { "code": "gr-naxos", "name": "Naxos", "parent": "gr", "kind": "ile", "bbox": [25.3, 36.9, 25.65, 37.2] },
+    { "code": "gr-paros", "name": "Paros", "parent": "gr", "kind": "ile", "bbox": [25.05, 36.95, 25.3, 37.15] },
+    { "code": "gr-kos", "name": "Kos", "parent": "gr", "kind": "ile", "bbox": [26.9, 36.7, 27.4, 36.95] },
+    { "code": "gr-zante", "name": "Zante", "parent": "gr", "kind": "ile", "bbox": [20.6, 37.6, 21.0, 37.95] },
+    { "code": "gr-cephalonie", "name": "Céphalonie", "parent": "gr", "kind": "ile", "bbox": [20.3, 38.0, 20.65, 38.5] },
+    { "code": "gr-lesbos", "name": "Lesbos", "parent": "gr", "kind": "ile", "bbox": [25.8, 38.95, 26.65, 39.45] },
+
+    { "code": "se-gotland", "name": "Gotland", "parent": "se", "kind": "ile", "bbox": [18.0, 56.8, 19.4, 58.0] },
+    { "code": "tn-djerba", "name": "Djerba", "parent": "tn", "kind": "ile", "bbox": [10.7, 33.6, 11.1, 33.95] },
+    { "code": "tz-zanzibar", "name": "Zanzibar", "parent": "tz", "kind": "ile", "unit": "Zanzibar", "flag": "x-zanzibar" },
+
+    { "code": "us-hawaii", "name": "Hawaï", "parent": "us", "kind": "ile", "bbox": [-161, 18.5, -154.5, 22.5], "flag": "x-hawaii" },
+    { "code": "ec-galapagos", "name": "Galápagos", "parent": "ec", "kind": "ile", "bbox": [-92.2, -1.6, -89.0, 0.8] },
+
+    { "code": "id-bali", "name": "Bali", "parent": "id", "kind": "ile", "bbox": [114.4, -8.9, 115.8, -8.0] },
+    { "code": "id-lombok", "name": "Lombok", "parent": "id", "kind": "ile", "bbox": [115.8, -9.0, 116.8, -8.1] },
+    { "code": "th-phuket", "name": "Phuket", "parent": "th", "kind": "ile", "bbox": [98.2, 7.7, 98.5, 8.2] },
+    { "code": "th-koh-samui", "name": "Koh Samui", "parent": "th", "kind": "ile", "bbox": [99.9, 9.4, 100.15, 9.6] },
+    { "code": "my-langkawi", "name": "Langkawi", "parent": "my", "kind": "ile", "bbox": [99.6, 6.2, 100.0, 6.5] },
+    { "code": "jp-okinawa", "name": "Okinawa", "parent": "jp", "kind": "ile", "bbox": [127.6, 26.0, 128.4, 26.9] },
+    { "code": "au-tasmanie", "name": "Tasmanie", "parent": "au", "kind": "ile", "bbox": [143.5, -44.0, 148.6, -39.4] }
+  ],
+  "territoryFlags": {
+    "gp": "x-guadeloupe",
+    "mq": "x-martinique",
+    "re": "x-reunion",
+    "gf": "x-guyane",
+    "wf": "x-wallis"
+  }
+}

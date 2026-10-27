@@ -6,7 +6,7 @@ import { Row, Section } from '../ui/GroupedList'
 import { EmptyState, ProgressBar, SegmentedControl } from '../ui/controls'
 import { Flag } from '../ui/Flag'
 import { computeStats, formatPercent } from '../data/stats'
-import { placeName, placeSubtitle } from '../data/places'
+import { getPlace, placeName, placeSubtitle } from '../data/places'
 import type { CountryEntry } from '../db/schema'
 import { useUI } from '../state/ui'
 
@@ -17,6 +17,11 @@ export function StatsScreen({ entries }: { entries: CountryEntry[] }) {
   const stats = useMemo(() => computeStats(entries), [entries])
   const { openCountry } = useUI()
 
+  // Pays visités tels que marqués : « Espagne », mais aussi « Tenerife » ou « Écosse »
+  const myPlaces = useMemo(
+    () => entries.filter((e) => e.status === 'visited' && getPlace(e.code)?.kind !== 'territory').map((e) => e.code),
+    [entries],
+  )
   const byName = (codes: string[]) => [...codes].sort((a, b) => placeName(a).localeCompare(placeName(b), 'fr'))
 
   return (
@@ -62,9 +67,9 @@ export function StatsScreen({ entries }: { entries: CountryEntry[] }) {
             ))}
           </Section>
 
-          {stats.visitedCountries.length > 0 && (
-            <Section header="Mes pays">
-              {byName(stats.visitedCountries).map((code) => (
+          {myPlaces.length > 0 && (
+            <Section header="Mes pays" footer={stats.visitedParts.length ? 'Une île ou une nation visitée compte pour son pays.' : undefined}>
+              {byName(myPlaces).map((code) => (
                 <Row
                   key={code}
                   label={

@@ -20,6 +20,8 @@ test('sauvegarde : rappel, export, import avec aperçu et remplacement', async (
 
   // Une photo, pour vérifier qu'elle fait l'aller-retour dans le ZIP
   await page.getByRole('button', { name: 'OK' }).click()
+  // Rappel discret : une pastille dans le coin, le message s'ouvre au toucher
+  await page.getByRole('button', { name: 'Rappel de sauvegarde' }).click()
   await expect(page.getByText('Tu n’as encore jamais sauvegardé tes données.')).toBeVisible()
   await page.screenshot({ path: shot('27-rappel', info.project.name) })
   await page.getByRole('navigation').getByRole('button', { name: 'Voyages' }).click()

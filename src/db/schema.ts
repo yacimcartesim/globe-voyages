@@ -1,4 +1,4 @@
-// Schéma des données de l'app (version 1).
+// Schéma des données de l'app (version 2).
 //
 // Toutes les données vivent dans IndexedDB, sur l'appareil. Les identifiants sont des
 // chaînes uniques (UUID) pour pouvoir fusionner des sauvegardes sans collision.
@@ -7,7 +7,14 @@
 // Pour faire évoluer le schéma : incrémenter SCHEMA_VERSION, ajouter une version
 // dans db.ts avec sa fonction de migration, et adapter l'import des sauvegardes.
 
-export const SCHEMA_VERSION = 1
+export const SCHEMA_VERSION = 2
+
+/**
+ * Version 2 : le Royaume-Uni est découpé en nations sur le globe.
+ * Un « gb » existant devient l'Angleterre (modifiable ensuite dans l'app).
+ */
+export const RENAMED_CODES_V2: Record<string, string> = { gb: 'gb-eng' }
+export const renameCodeV2 = (code: string) => RENAMED_CODES_V2[code] ?? code
 
 export type Id = string
 export type ISODate = string // « 2026-07-14 »

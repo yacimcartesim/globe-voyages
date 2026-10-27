@@ -5,7 +5,7 @@
 
 import JSZip from 'jszip'
 import { db } from '../db/db'
-import { SCHEMA_VERSION, type CountryEntry, type Expense, type Photo, type QuickNote, type Stop, type Trip, type WishPlace } from '../db/schema'
+import { renameCodeV2, SCHEMA_VERSION, type CountryEntry, type Expense, type Photo, type QuickNote, type Stop, type Trip, type WishPlace } from '../db/schema'
 
 const APP_ID = 'globe-voyages'
 
@@ -142,7 +142,16 @@ export type ParsedBackup = { data: BackupData; zip: JSZip; summary: BackupSummar
 
 /** Fait évoluer une sauvegarde ancienne vers le schéma actuel (rien à faire pour la v1) */
 function migrate(data: BackupData): BackupData {
-  // Exemple pour plus tard : if (data.schemaVersion < 2) { …; data.schemaVersion = 2 }
+  if (data.schemaVersion < 2) {
+    // Royaume-Uni découpé en nations (voir RENAMED_CODES_V2)
+    const seen = new Set<string>()
+    data.countries = data.countries
+      .map((c) => ({ ...c, code: renameCodeV2(c.code) }))
+      .filter((c) => !seen.has(c.code) && seen.add(c.code))
+    data.trips = data.trips.map((t) => ({ ...t, countries: [...new Set(t.countries.map(renameCodeV2))] }))
+    data.wishPlaces = data.wishPlaces.map((w) => (w.countryCode ? { ...w, countryCode: renameCodeV2(w.countryCode) } : w))
+    data.schemaVersion = 2
+  }
   return data
 }
 

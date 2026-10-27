@@ -119,7 +119,7 @@ const EXPENSES: [number | null, string, Expense['category'], string, number][] =
 const DEMO_RATE = 0.8745 // 1 USD en euros (juillet 2026), fixé pour fonctionner hors connexion
 
 /** Pays visités ajoutés par la démo (en plus des États-Unis) */
-const DEMO_COUNTRIES = ['us', 'fr', 'es', 'it', 'pt', 'gb', 'ma', 'jp', 'is', 'gl']
+const DEMO_COUNTRIES = ['us', 'fr', 'es', 'it', 'pt', 'gb-eng', 'gb-sct', 'ma', 'jp', 'is', 'gl']
 
 export async function loadDemo() {
   if (await db.meta.get(KEY)) return
