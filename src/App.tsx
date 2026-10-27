@@ -11,6 +11,8 @@ import { useCountryEntries } from './db/countries'
 import { UIProvider, useUI } from './state/ui'
 import { TripSheet } from './screens/trip/TripSheet'
 import { TripFormSheet } from './screens/TripFormSheet'
+import { QuickNoteButton } from './ui/QuickNoteButton'
+import { QuickNoteSheet } from './screens/QuickNoteSheet'
 
 type TabId = 'globe' | 'trips' | 'stats' | 'wishlist'
 
@@ -42,7 +44,7 @@ export default function App() {
             <StatsScreen entries={entries} />
           </div>
           <div className="absolute inset-0" hidden={tab !== 'wishlist'}>
-            <WishlistScreen />
+            <WishlistScreen entries={entries} />
           </div>
         </main>
 
@@ -51,6 +53,7 @@ export default function App() {
         <CountrySheet entries={entries} />
         <TripSheet />
         <NewTrip />
+        <QuickNote />
       </div>
     </UIProvider>
   )
@@ -66,5 +69,17 @@ function NewTrip() {
       initialCountries={newTrip?.countries}
       onCreated={openTrip}
     />
+  )
+}
+
+/** Note rapide : bouton flottant + fiche (rattachée au voyage ouvert, s'il y en a un) */
+function QuickNote() {
+  const { tripId } = useUI()
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <QuickNoteButton onClick={() => setOpen(true)} />
+      <QuickNoteSheet open={open} onClose={() => setOpen(false)} tripId={tripId ?? undefined} />
+    </>
   )
 }

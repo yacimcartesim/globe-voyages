@@ -67,7 +67,7 @@ export function Screen({ title, trailing, subtitle, tabId, fixed, children }: Pr
         {subtitle}
       </div>
 
-      <div style={{ paddingBottom: fixed ? 0 : 'calc(var(--tabbar-h) + 24px)' }}>{children}</div>
+      <div style={{ paddingBottom: fixed ? 0 : 'calc(var(--tabbar-h) + 88px)' }}>{children}</div>
     </div>
   )
 }

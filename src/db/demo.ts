@@ -2,12 +2,12 @@
 // Tout ce qui est créé est noté, pour pouvoir l'effacer ensuite sans toucher à tes vraies données.
 
 import { useLiveQuery } from 'dexie-react-hooks'
-import { db, nowISO } from './db'
+import { db, newId, nowISO } from './db'
 import { addStop, createTrip, deleteTrip, updateTrip } from './trips'
 import type { Expense, Stop } from './schema'
 import { saveExpense } from './expenses'
 
-type DemoRecord = { tripIds: string[]; countryCodes: string[] }
+type DemoRecord = { tripIds: string[]; countryCodes: string[]; wishPlaceIds?: string[]; noteIds?: string[] }
 const KEY = 'demo'
 
 export function useDemoLoaded(): boolean {
@@ -157,7 +157,27 @@ export async function loadDemo() {
     })
   }
 
-  const record: DemoRecord = { tripIds: [tripId], countryCodes }
+  // Un lieu de wishlist et une note rapide à classer
+  const wishId = newId()
+  await db.wishPlaces.add({
+    id: wishId,
+    name: 'Machu Picchu',
+    countryCode: 'pe',
+    coords: { lat: -13.1631, lng: -72.545 },
+    note: 'Par le chemin de l’Inca, en saison sèche (mai à septembre)',
+    priority: 3,
+    createdAt: now,
+  })
+  const noteId = newId()
+  await db.notes.add({
+    id: noteId,
+    text: 'Peggy Sue’s Diner à Yermo\nMilkshakes géants, déco années 50, pause parfaite sur la route de Las Vegas',
+    createdAt: now,
+    coords: { lat: 34.9036, lng: -116.8253 },
+    tripId,
+  })
+
+  const record: DemoRecord = { tripIds: [tripId], countryCodes, wishPlaceIds: [wishId], noteIds: [noteId] }
   await db.meta.put({ key: KEY, value: record })
 }
 
@@ -167,5 +187,7 @@ export async function clearDemo() {
   const record = entry.value as DemoRecord
   for (const id of record.tripIds) await deleteTrip(id)
   await db.countries.bulkDelete(record.countryCodes)
+  await db.wishPlaces.bulkDelete(record.wishPlaceIds ?? [])
+  await db.notes.bulkDelete(record.noteIds ?? [])
   await db.meta.delete(KEY)
 }

@@ -15,8 +15,8 @@ type Props = {
   active: boolean
   autoRotate: boolean
   onSelect: (code: string) => void
-  /** Étapes des voyages : petits points affichés quand on zoome */
-  points: { lat: number; lng: number }[]
+  /** Étapes des voyages et lieux de la wishlist : petits points affichés quand on zoome */
+  points: { lat: number; lng: number; kind: 'stop' | 'wish' }[]
 }
 
 export type GlobeHandle = { flyTo: (code: string) => void }
@@ -182,7 +182,9 @@ export const GlobeView = forwardRef<GlobeHandle, Props>(function GlobeView(
           pointsData={zoomedIn ? points : []}
           pointLat="lat"
           pointLng="lng"
-          pointColor={() => (scheme === 'dark' ? '#ffffff' : '#0a84ff')}
+          pointColor={(p: object) =>
+            (p as Props['points'][number]).kind === 'wish' ? '#ff9500' : scheme === 'dark' ? '#ffffff' : '#0a84ff'
+          }
           pointRadius={0.09}
           pointAltitude={0.002}
           pointResolution={8}

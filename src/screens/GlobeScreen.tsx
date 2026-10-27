@@ -10,6 +10,7 @@ import type { CountryEntry } from '../db/schema'
 import { usePreference } from '../hooks/usePreference'
 import { useUI } from '../state/ui'
 import { useAllStops } from '../db/trips'
+import { useWishPlaces } from '../db/wishlist'
 
 // Le globe (three.js) est chargé à part : l'interface s'affiche tout de suite, le globe juste après
 const GlobeView = lazy(() => import('../globe/GlobeView').then((m) => ({ default: m.GlobeView })))
@@ -26,7 +27,14 @@ export function GlobeScreen({ entries, active, onOpenSettings }: Props) {
 
   const stats = useMemo(() => computeStats(entries), [entries])
   const allStops = useAllStops()
-  const points = useMemo(() => (allStops ?? []).filter((s) => s.coords).map((s) => s.coords!), [allStops])
+  const wishPlaces = useWishPlaces()
+  const points = useMemo(
+    () => [
+      ...(allStops ?? []).filter((s) => s.coords).map((s) => ({ ...s.coords!, kind: 'stop' as const })),
+      ...(wishPlaces ?? []).filter((p) => p.coords).map((p) => ({ ...p.coords!, kind: 'wish' as const })),
+    ],
+    [allStops, wishPlaces],
+  )
   const visited = useMemo(() => entries.filter((e) => e.status === 'visited').map((e) => e.code).sort(), [entries])
   const visitedSet = useMemo(() => new Set(visited), [visited])
 

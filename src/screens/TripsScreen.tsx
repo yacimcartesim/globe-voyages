@@ -1,4 +1,5 @@
-import { Luggage, MapPin, Plus } from 'lucide-react'
+import { Inbox, Luggage, MapPin, Plus } from 'lucide-react'
+import { useState } from 'react'
 import { motion } from 'motion/react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Screen } from '../ui/Screen'
@@ -9,10 +10,15 @@ import { spring } from '../ui/motion'
 import { formatRange, tripLength, useTrips } from '../db/trips'
 import { db } from '../db/db'
 import { useUI } from '../state/ui'
+import { useNotes } from '../db/notes'
+import { Row, Section } from '../ui/GroupedList'
+import { InboxSheet } from './InboxSheet'
 
 export function TripsScreen() {
   const trips = useTrips()
   const { openTrip, startNewTrip } = useUI()
+  const notes = useNotes() ?? []
+  const [inboxOpen, setInboxOpen] = useState(false)
   // Nombre d'étapes par voyage
   const stopCounts = useLiveQuery(async () => {
     const counts = new Map<string, number>()
@@ -26,6 +32,21 @@ export function TripsScreen() {
       tabId="trips"
       trailing={<IconButton icon={Plus} label="Nouveau voyage" filled onClick={() => startNewTrip()} />}
     >
+      {notes.length > 0 && (
+        <Section>
+          <Row
+            icon={Inbox}
+            iconColor="var(--blue)"
+            label="Boîte de réception"
+            accessory={
+              <span className="rounded-full bg-blue px-2 text-[15px] font-semibold text-white tabular-nums">{notes.length}</span>
+            }
+            chevron
+            onClick={() => setInboxOpen(true)}
+          />
+        </Section>
+      )}
+
       {trips && trips.length === 0 && (
         <EmptyState
           icon={Luggage}
@@ -76,6 +97,7 @@ export function TripsScreen() {
           )
         })}
       </ul>
+      <InboxSheet open={inboxOpen} onClose={() => setInboxOpen(false)} />
     </Screen>
   )
 }
