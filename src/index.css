@@ -1,0 +1,263 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   Design system : couleurs système iOS (clair / sombre automatique)
+   Valeurs reprises des Human Interface Guidelines d'Apple.
+   ------------------------------------------------------------------ */
+:root {
+  color-scheme: light dark;
+
+  /* Fonds */
+  --bg: #ffffff;
+  --bg-grouped: #f2f2f7;
+  --bg-elevated: #ffffff; /* cellules des listes groupées, cartes */
+  --bg-tertiary: #e5e5ea;
+
+  /* Textes */
+  --label: #000000;
+  --label-2: rgb(60 60 67 / 0.6);
+  --label-3: rgb(60 60 67 / 0.3);
+  --separator: rgb(60 60 67 / 0.18);
+  --fill: rgb(120 120 128 / 0.12);
+  --fill-strong: rgb(120 120 128 / 0.2);
+
+  /* Matériau translucide des barres (tab bar, barre de navigation) */
+  --material: rgb(249 249 249 / 0.78);
+  --material-border: rgb(0 0 0 / 0.12);
+
+  /* Couleurs système */
+  --blue: #007aff;
+  --green: #34c759;
+  --red: #ff3b30;
+  --orange: #ff9500;
+  --yellow: #ffcc00;
+  --teal: #30b0c7;
+  --indigo: #5856d6;
+  --purple: #af52de;
+  --pink: #ff2d55;
+  --gray: #8e8e93;
+
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px rgb(0 0 0 / 0.06);
+
+  /* Liquid Glass (iOS 26) : verre clair, reflet en haut, liseré lumineux */
+  --glass-bg: rgb(255 255 255 / 0.5);
+  --glass-tint: linear-gradient(180deg, rgb(255 255 255 / 0.45) 0%, rgb(255 255 255 / 0.08) 45%, rgb(255 255 255 / 0.18) 100%);
+  --glass-edge: rgb(255 255 255 / 0.65);
+  --glass-edge-low: rgb(255 255 255 / 0.25);
+  --glass-outline: rgb(0 0 0 / 0.06);
+  --glass-shadow: 0 10px 30px rgb(0 0 0 / 0.1), 0 2px 6px rgb(0 0 0 / 0.06);
+  --glass-selection: rgb(120 120 128 / 0.16);
+
+  /* Globe : océan uni doux */
+  --ocean-bg: #f2f2f7;
+  --ocean: #cfe0f0;
+  --ocean-light: #e8f1fa;
+  --ocean-dark: #b3cbe3;
+
+  /* Hauteur réservée en bas pour la tab bar flottante */
+  --tabbar-h: calc(62px + max(env(safe-area-inset-bottom), 12px));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --bg-grouped: #000000;
+    --bg-elevated: #1c1c1e;
+    --bg-tertiary: #2c2c2e;
+
+    --label: #ffffff;
+    --label-2: rgb(235 235 245 / 0.6);
+    --label-3: rgb(235 235 245 / 0.3);
+    --separator: rgb(84 84 88 / 0.55);
+    --fill: rgb(118 118 128 / 0.24);
+    --fill-strong: rgb(118 118 128 / 0.36);
+
+    --material: rgb(22 22 24 / 0.78);
+    --material-border: rgb(255 255 255 / 0.1);
+
+    --blue: #0a84ff;
+    --green: #30d158;
+    --red: #ff453a;
+    --orange: #ff9f0a;
+    --yellow: #ffd60a;
+    --teal: #40c8e0;
+    --indigo: #5e5ce6;
+    --purple: #bf5af2;
+    --pink: #ff375f;
+    --gray: #8e8e93;
+
+    --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.35);
+
+    --glass-bg: rgb(36 36 40 / 0.5);
+    --glass-tint: linear-gradient(180deg, rgb(255 255 255 / 0.14) 0%, rgb(255 255 255 / 0.02) 45%, rgb(255 255 255 / 0.06) 100%);
+    --glass-edge: rgb(255 255 255 / 0.28);
+    --glass-edge-low: rgb(255 255 255 / 0.08);
+    --glass-outline: rgb(0 0 0 / 0.4);
+    --glass-shadow: 0 10px 30px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.3);
+    --glass-selection: rgb(255 255 255 / 0.14);
+
+    --ocean-bg: #000000;
+    --ocean: #14283c;
+    --ocean-light: #223f5c;
+    --ocean-dark: #0b1826;
+  }
+}
+
+/* Les variables deviennent des classes Tailwind : bg-grouped, text-label-2, text-blue… */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-grouped: var(--bg-grouped);
+  --color-elevated: var(--bg-elevated);
+  --color-tertiary: var(--bg-tertiary);
+  --color-label: var(--label);
+  --color-label-2: var(--label-2);
+  --color-label-3: var(--label-3);
+  --color-separator: var(--separator);
+  --color-fill: var(--fill);
+  --color-fill-strong: var(--fill-strong);
+  --color-material: var(--material);
+  --color-blue: var(--blue);
+  --color-green: var(--green);
+  --color-red: var(--red);
+  --color-orange: var(--orange);
+  --color-yellow: var(--yellow);
+  --color-teal: var(--teal);
+  --color-indigo: var(--indigo);
+  --color-purple: var(--purple);
+  --color-pink: var(--pink);
+  --color-gray: var(--gray);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+  --shadow-soft: var(--shadow-soft);
+}
+
+/* Échelle typographique iOS (Dynamic Type, taille « Large » par défaut) */
+@utility text-large-title {
+  font-size: 34px;
+  line-height: 41px;
+  font-weight: 700;
+  letter-spacing: 0.37px;
+}
+@utility text-title-1 {
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 700;
+  letter-spacing: 0.36px;
+}
+@utility text-title-2 {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+}
+@utility text-title-3 {
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 600;
+  letter-spacing: 0.38px;
+}
+@utility text-headline {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 600;
+  letter-spacing: -0.41px;
+}
+@utility text-body {
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.41px;
+}
+@utility text-subhead {
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+}
+@utility text-footnote {
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.08px;
+}
+@utility text-caption {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* Matériau translucide flouté façon iOS */
+@utility material {
+  background-color: var(--material);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+/* Liquid Glass : flou + saturation du fond, reflet spéculaire en haut,
+   liseré lumineux sur les bords et ombre portée douce.
+   (La réfraction exacte d'Apple n'est pas reproductible dans Safari ; ceci en est l'équivalent visuel.) */
+@utility glass {
+  background-color: var(--glass-bg);
+  background-image: var(--glass-tint);
+  -webkit-backdrop-filter: blur(14px) saturate(190%) brightness(1.04);
+  backdrop-filter: blur(14px) saturate(190%) brightness(1.04);
+  box-shadow:
+    inset 0 1px 0.5px var(--glass-edge),
+    inset 0 -1px 0.5px var(--glass-edge-low),
+    inset 1px 0 0.5px var(--glass-edge-low),
+    inset -1px 0 0.5px var(--glass-edge-low),
+    0 0 0 0.5px var(--glass-outline),
+    var(--glass-shadow);
+}
+
+/* « Scroll edge effect » iOS 26 : le contenu se floute et s'estompe en passant sous la barre du haut */
+@utility scroll-edge-top {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  background: linear-gradient(to bottom, var(--bg-grouped) 0%, color-mix(in srgb, var(--bg-grouped) 60%, transparent) 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent);
+  mask-image: linear-gradient(to bottom, black 55%, transparent);
+}
+
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--bg-grouped);
+  color: var(--label);
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  /* Pas d'effet « élastique » sur toute la page ni de surbrillance grise au tap */
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Supprime le zoom au double-tap */
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Les champs restent sélectionnables et à 16 px minimum (sinon iOS zoome) */
+input,
+textarea,
+select,
+[contenteditable] {
+  font-size: max(16px, 1em);
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Masque la barre de défilement tout en gardant le défilement */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Image centrale des écrans de démarrage iPhone : l'icône avec coins arrondis façon iOS -->
+  <defs>
+    <linearGradient id="fond" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#48A6FF"/>
+      <stop offset="1" stop-color="#0062D9"/>
+    </linearGradient>
+    <clipPath id="sphere"><circle cx="256" cy="256" r="148"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="115" fill="url(#fond)"/>
+  <circle cx="256" cy="256" r="148" fill="#fff" fill-opacity=".16"/>
+  <g clip-path="url(#sphere)" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round">
+    <ellipse cx="256" cy="256" rx="64" ry="148"/>
+    <line x1="256" y1="100" x2="256" y2="412"/>
+    <line x1="100" y1="256" x2="412" y2="256"/>
+    <line x1="100" y1="182" x2="412" y2="182"/>
+    <line x1="100" y1="330" x2="412" y2="330"/>
+  </g>
+  <circle cx="256" cy="256" r="148" fill="none" stroke="#fff" stroke-width="16"/>
+</svg>

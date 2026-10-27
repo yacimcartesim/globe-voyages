@@ -1,0 +1,45 @@
+import { useState } from 'react'
+import { ChartPie, Earth, Luggage, Star } from 'lucide-react'
+import { TabBar, type Tab } from './ui/TabBar'
+import { GlobeScreen } from './screens/GlobeScreen'
+import { TripsScreen } from './screens/TripsScreen'
+import { StatsScreen } from './screens/StatsScreen'
+import { WishlistScreen } from './screens/WishlistScreen'
+import { SettingsSheet } from './screens/SettingsSheet'
+
+type TabId = 'globe' | 'trips' | 'stats' | 'wishlist'
+
+const TABS: Tab<TabId>[] = [
+  { id: 'globe', label: 'Globe', icon: Earth },
+  { id: 'trips', label: 'Voyages', icon: Luggage },
+  { id: 'stats', label: 'Statistiques', icon: ChartPie },
+  { id: 'wishlist', label: 'Wishlist', icon: Star },
+]
+
+export default function App() {
+  const [tab, setTab] = useState<TabId>('globe')
+  const [settingsOpen, setSettingsOpen] = useState(false)
+
+  return (
+    <div className="relative h-full overflow-hidden bg-grouped">
+      {/* Tous les écrans restent montés (le globe ne se recharge pas, le défilement est conservé) */}
+      <main className="absolute inset-0">
+        <div className="absolute inset-0" hidden={tab !== 'globe'}>
+          <GlobeScreen onOpenSettings={() => setSettingsOpen(true)} />
+        </div>
+        <div className="absolute inset-0" hidden={tab !== 'trips'}>
+          <TripsScreen />
+        </div>
+        <div className="absolute inset-0" hidden={tab !== 'stats'}>
+          <StatsScreen />
+        </div>
+        <div className="absolute inset-0" hidden={tab !== 'wishlist'}>
+          <WishlistScreen />
+        </div>
+      </main>
+
+      <TabBar tabs={TABS} active={tab} onChange={setTab} />
+      <SettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+    </div>
+  )
+}
