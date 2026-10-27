@@ -9,6 +9,12 @@ const BASE = '/globe-voyages/'
 
 export default defineConfig({
   base: BASE,
+  build: {
+    // Les drapeaux restent des fichiers séparés (chargés seulement si besoin) au lieu d'être collés dans le code
+    assetsInlineLimit: (file) => (file.endsWith('.svg') ? false : undefined),
+    // Le moteur 3D (three.js) est volumineux par nature ; il est mis en cache après le premier chargement
+    chunkSizeWarningLimit: 2500,
+  },
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? '0.0.0'),
   },

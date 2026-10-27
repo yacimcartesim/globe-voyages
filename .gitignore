@@ -6,3 +6,4 @@ playwright-report
 tests/screenshots
 *.tsbuildinfo
 .DS_Store
+scripts/.cache

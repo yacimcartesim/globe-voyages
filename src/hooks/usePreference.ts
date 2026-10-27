@@ -1,31 +1,38 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useSyncExternalStore } from 'react'
 
 // Petites préférences d'affichage (rotation du globe…), gardées dans le navigateur.
-// Les vraies données (pays, voyages, photos) iront dans IndexedDB à partir de la phase 2.
+// Partagées entre composants : changer un réglage met à jour tout l'écran immédiatement.
 
 const PREFIX = 'globe-voyages:'
+const listeners = new Set<() => void>()
+const memory = new Map<string, string>() // repli si le stockage est indisponible (navigation privée)
+
+function read(key: string): string | null {
+  try {
+    return localStorage.getItem(PREFIX + key)
+  } catch {
+    return memory.get(key) ?? null
+  }
+}
+
+function write(key: string, raw: string) {
+  try {
+    localStorage.setItem(PREFIX + key, raw)
+  } catch {
+    memory.set(key, raw)
+  }
+  listeners.forEach((l) => l())
+}
 
 export function usePreference<T>(key: string, initial: T) {
-  const [value, setValue] = useState<T>(() => {
-    try {
-      const raw = localStorage.getItem(PREFIX + key)
-      return raw == null ? initial : (JSON.parse(raw) as T)
-    } catch {
-      return initial
-    }
-  })
-
-  const update = useCallback(
-    (v: T) => {
-      setValue(v)
-      try {
-        localStorage.setItem(PREFIX + key, JSON.stringify(v))
-      } catch {
-        // Stockage indisponible (navigation privée) : la préférence reste en mémoire
-      }
+  const raw = useSyncExternalStore(
+    (cb) => {
+      listeners.add(cb)
+      return () => listeners.delete(cb)
     },
-    [key],
+    () => read(key),
   )
-
+  const value = raw == null ? initial : (JSON.parse(raw) as T)
+  const update = useCallback((v: T) => write(key, JSON.stringify(v)), [key])
   return [value, update] as const
 }

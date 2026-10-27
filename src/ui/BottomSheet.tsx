@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion, useDragControls, type PanInfo } from 'motion/react'
 import { spring } from './motion'
@@ -23,6 +23,12 @@ type Props = {
  */
 export function BottomSheet({ open, onClose, title, leading, trailing, size = 'large', children }: Props) {
   const dragControls = useDragControls()
+  // Heure d'ouverture : un tap sur le fond juste après l'ouverture est ignoré
+  // (sur iPhone, le geste qui a ouvert la fiche peut produire un « click » fantôme)
+  const openedAt = useRef(0)
+  useEffect(() => {
+    if (open) openedAt.current = performance.now()
+  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -46,7 +52,7 @@ export function BottomSheet({ open, onClose, title, leading, trailing, size = 'l
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            onClick={onClose}
+            onClick={() => performance.now() - openedAt.current > 400 && onClose()}
           />
 
           <motion.div
