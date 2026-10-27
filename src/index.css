@@ -240,18 +240,21 @@ body {
   -webkit-user-select: none;
 }
 
-/* Les champs restent sélectionnables et à 16 px minimum (sinon iOS zoome) */
-input,
-textarea,
-select,
-[contenteditable] {
-  font-size: max(16px, 1em);
-  user-select: text;
-  -webkit-user-select: text;
-}
+/* Règles de base dans la couche « base » de Tailwind : les classes (text-[40px]…) peuvent les surcharger */
+@layer base {
+  /* Les champs restent sélectionnables et à 16 px minimum (sinon iOS zoome) */
+  input,
+  textarea,
+  select,
+  [contenteditable] {
+    font-size: max(16px, 1em);
+    user-select: text;
+    -webkit-user-select: text;
+  }
 
-button {
-  cursor: pointer;
+  button {
+    cursor: pointer;
+  }
 }
 
 /* Masque la barre de défilement tout en gardant le défilement */

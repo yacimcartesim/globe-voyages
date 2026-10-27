@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { Ellipsis, Pencil, Trash2, Wallet, X } from 'lucide-react'
+import { Ellipsis, Pencil, Trash2, X } from 'lucide-react'
 import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react'
 import { createPortal } from 'react-dom'
-import { EmptyState, SegmentedControl } from '../../ui/controls'
+import { SegmentedControl } from '../../ui/controls'
 import { Flag } from '../../ui/Flag'
 import { TripCover } from '../../ui/TripCover'
 import { spring } from '../../ui/motion'
 import { ItineraryTab } from './ItineraryTab'
 import { PracticalTab } from './PracticalTab'
 import { PhotosTab } from './PhotosTab'
+import { BudgetTab } from './BudgetTab'
 import { TripFormSheet } from '../TripFormSheet'
 import { deleteTrip, formatRange, tripLength, useTrip } from '../../db/trips'
 import { useUI } from '../../state/ui'
@@ -144,13 +145,7 @@ export function TripSheet() {
               {tab === 'itinerary' && <ItineraryTab trip={trip} />}
               {tab === 'practical' && <PracticalTab trip={trip} />}
               {tab === 'photos' && <PhotosTab trip={trip} />}
-              {tab === 'budget' && (
-                <EmptyState
-                  icon={Wallet}
-                  title="Budget"
-                  text={`Le suivi des dépenses (en ${trip.currency} et en euros) arrive en phase 5.`}
-                />
-              )}
+              {tab === 'budget' && <BudgetTab trip={trip} />}
             </div>
           </div>
 

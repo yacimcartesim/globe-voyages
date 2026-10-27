@@ -7,6 +7,9 @@ export default defineConfig({
   reporter: 'list',
   use: {
     ...devices['iPhone 15'],
+    // iPhone réglé en français (dates, nombres)
+    locale: 'fr-FR',
+    timezoneId: 'Europe/Paris',
     baseURL: 'http://localhost:4173/globe-voyages/',
   },
   projects: [

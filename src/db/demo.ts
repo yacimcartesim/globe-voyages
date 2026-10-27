@@ -4,7 +4,8 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, nowISO } from './db'
 import { addStop, createTrip, deleteTrip, updateTrip } from './trips'
-import type { Stop } from './schema'
+import type { Expense, Stop } from './schema'
+import { saveExpense } from './expenses'
 
 type DemoRecord = { tripIds: string[]; countryCodes: string[] }
 const KEY = 'demo'
@@ -97,6 +98,26 @@ const PRACTICAL = {
 - Buffets moins chers en semaine à Las Vegas`,
 }
 
+// Dépenses : [index de l'étape, date, catégorie, libellé, montant en USD]
+const EXPENSES: [number | null, string, Expense['category'], string, number][] = [
+  [0, '2026-07-06', 'transport', 'Location de voiture (11 jours)', 612],
+  [0, '2026-07-06', 'lodging', 'Hôtel Santa Monica (2 nuits)', 398],
+  [0, '2026-07-07', 'food', 'Tacos à Venice Beach', 34.5],
+  [0, '2026-07-07', 'activities', 'Griffith Observatory (parking)', 20],
+  [1, '2026-07-08', 'transport', 'Plein d’essence', 71.2],
+  [2, '2026-07-09', 'activities', 'Entrée Death Valley', 35],
+  [2, '2026-07-09', 'lodging', 'The Ranch at Death Valley', 289],
+  [2, '2026-07-09', 'food', 'Eau et provisions', 26.8],
+  [3, '2026-07-10', 'lodging', 'Hôtel sur le Strip (2 nuits)', 316],
+  [3, '2026-07-11', 'events', 'Spectacle du Cirque du Soleil', 178],
+  [3, '2026-07-11', 'food', 'Buffet', 62],
+  [4, '2026-07-13', 'transport', 'Plein d’essence', 64.9],
+  [4, '2026-07-13', 'lodging', 'Airbnb Twentynine Palms', 167],
+  [5, '2026-07-14', 'food', 'Dîner à Palm Springs', 58],
+  [null, '2026-07-16', 'misc', 'Souvenirs', 45],
+]
+const DEMO_RATE = 0.8745 // 1 USD en euros (juillet 2026), fixé pour fonctionner hors connexion
+
 /** Pays visités ajoutés par la démo (en plus des États-Unis) */
 const DEMO_COUNTRIES = ['us', 'fr', 'es', 'it', 'pt', 'gb', 'ma', 'jp', 'is', 'gl']
 
@@ -120,7 +141,21 @@ export async function loadDemo() {
     companions: 'Léa et Tom',
   })
   await updateTrip(tripId, { practical: PRACTICAL })
-  for (const s of STOPS) await addStop(tripId, { ...s, date: undefined })
+  const stopIds: string[] = []
+  for (const s of STOPS) stopIds.push(await addStop(tripId, { ...s, date: undefined }))
+  for (const [stop, date, category, label, amount] of EXPENSES) {
+    await saveExpense({
+      tripId,
+      stopId: stop === null ? undefined : stopIds[stop],
+      date,
+      category,
+      label,
+      amount,
+      currency: 'USD',
+      rate: DEMO_RATE,
+      amountEUR: Math.round(amount * DEMO_RATE * 100) / 100,
+    })
+  }
 
   const record: DemoRecord = { tripIds: [tripId], countryCodes }
   await db.meta.put({ key: KEY, value: record })
